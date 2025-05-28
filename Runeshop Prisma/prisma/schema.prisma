@@ -1,0 +1,135 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+	ADMIN
+	USER
+}
+
+enum Marca {
+	ADIDAS
+	NIKE
+	REEBOK
+	PUMA
+}
+
+enum TipoProducto {
+	ZAPATILLA
+	REMERA
+	CAMPERA
+	BOTIN
+}
+
+model Usuario {
+	id Int @id @default(autoincrement())
+	nombre String
+	apellido String
+	email String @unique
+	nombre_usuario String
+	contraseña Int
+	rol Role
+	usuario_direccion UsuarioDireccion[]
+}
+
+model Direccion {
+	id Int @id @default(autoincrement())
+	localidad String
+	departamento String
+	provincia String
+	pais String
+	usuario_direccion UsuarioDireccion[]
+}
+
+model UsuarioDireccion {
+	id Int @id @default(autoincrement())
+	usuario Usuario @relation(fields: [usuario_id], references: [id])
+	usuario_id Int
+	direccion Direccion @relation(fields: [direccion_id], references: [id])
+	direccion_id Int
+	ordenCompra OrdenCompra[]
+}
+
+model OrdenCompra {
+	id Int @id @default(autoincrement())
+	total Decimal
+	fechaCompra DateTime
+	usuario_direccion UsuarioDireccion @relation(fields: [usuario_direccion_id], references: [id])
+	usuario_direccion_id Int
+	detalles Detalle[] @relation("ordenCompra_detalle")
+}
+
+model Detalle {
+	id Int @id @default(autoincrement())
+	color String
+	marca Marca
+	stock Int
+	precioDescuento Decimal
+	inicioDescuento DateTime
+	finDescuento DateTime
+	ordenCompra OrdenCompra[] @relation("ordenCompra_detalle")
+	descuento Descuento @relation(fields: [descuento_id], references: [id])
+	descuento_id Int
+	producto Producto @relation(fields: [producto_id], references: [id])
+	producto_id Int
+	talle Talle @relation(fields: [talle_id], references: [id])
+	talle_id Int
+	precio Precio @relation(fields: [precio_id], references: [id])
+	precio_id Int
+	imagenes Imagen[] @relation("detalle_imagen")
+}
+
+model Categoria {
+	id Int @id @default(autoincrement())
+	nombre String
+	producto Producto[]
+}
+
+model Producto {
+	id Int @id @default(autoincrement())
+	modelo String
+	sexo String
+	tipoProducto TipoProducto
+	categoria Categoria @relation(fields: [categoria_id], references: [id])
+	categoria_id Int
+	detalles Detalle[]
+}
+
+model Descuento {
+	id Int @id @default(autoincrement())
+	porcentaje String
+	valor Decimal
+	detalles Detalle[]
+}
+
+model Talle {
+	id Int @id @default(autoincrement())
+	numero Int
+	detalles Detalle[]
+}
+
+model Precio {
+	id Int @id @default(autoincrement())
+	precioCompra Decimal
+	precioVenta Decimal
+	detalles Detalle[]
+}
+
+model Imagen {
+	id Int @id @default(autoincrement())
+	nombre String
+	imagenUrl String
+	detalles Detalle[] @relation("detalle_imagen")
+}
