@@ -1,4 +1,4 @@
-import { Categoria, Detalle, Producto } from "../generated/prisma/index.js";
+import { Categoria, Detalle, Producto } from "@prisma/client";
 
 
 

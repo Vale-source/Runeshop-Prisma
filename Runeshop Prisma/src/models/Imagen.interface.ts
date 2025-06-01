@@ -1,4 +1,4 @@
-import { Imagen } from "../generated/prisma/index.js";
+import { Imagen } from "@prisma/client";
 
 export type TypeGetImagen = Imagen
 

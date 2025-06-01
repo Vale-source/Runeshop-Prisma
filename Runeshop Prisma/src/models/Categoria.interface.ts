@@ -1,4 +1,4 @@
-import { Categoria, Producto } from "../generated/prisma/index.js";
+import { Categoria, Producto } from "@prisma/client";
 
 export type CleanProducto = Omit<Producto, "categoria_id">
 type CleanCategoria = Omit<Categoria, "producto">

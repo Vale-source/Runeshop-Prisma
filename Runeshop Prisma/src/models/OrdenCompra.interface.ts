@@ -1,4 +1,4 @@
-import { Detalle, OrdenCompra, UsuarioDireccion } from "../generated/prisma/index.js";
+import { Detalle, OrdenCompra, UsuarioDireccion } from "@prisma/client";
 
 type CleanUsuarioDireccion = Omit<UsuarioDireccion, "ordenCompra">
 type CleanDetalles = Omit<Detalle, "ordenCompra">
