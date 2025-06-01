@@ -1,12 +1,44 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../generated/prisma/index.js';
 
 const prisma = new PrismaClient();
 
-type ModelName = keyof PrismaClient;
-type ModelType<K extends ModelName> = PrismaClient[K];
+type ModelName = {
+	[K in keyof PrismaClient]: PrismaClient[K] extends { findMany: Function }
+		? K
+		: never;
+}[keyof PrismaClient];
 
-const getModel = <K extends ModelName>(modelName: K): ModelType<K> => {
-	const model = prisma[modelName];
-	if (!model) throw new Error(`Modelo ${String(modelName)} no encontrado`);
-	return model;
-};
+export class BaseService<T, CreateT> {
+	protected model: any;
+
+	constructor(modelName: ModelName) {
+		const model = prisma[modelName];
+		if (!model || typeof model.findMany !== 'function')
+			throw new Error(
+				`Modelo ${String(
+					modelName,
+				)} no encontrado o no es un modelo de Prisma`,
+			);
+		this.model = model;
+	}
+
+	async findAll(): Promise<T[]> {
+		return this.model.findMany();
+	}
+
+	async findOne(id: number): Promise<T> {
+		return this.model.findUnique({ where: { id } });
+	}
+
+	async create(data: CreateT): Promise<T> {
+		return this.model.create({ data });
+	}
+
+	async update(id: number, data: CreateT): Promise<T> {
+		return this.model.update({ where: { id }, data });
+	}
+
+	async delete(id: number): Promise<T> {
+		return this.model.delete({ where: { id } });
+	}
+}

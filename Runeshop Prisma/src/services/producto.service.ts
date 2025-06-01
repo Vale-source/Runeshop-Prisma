@@ -1,8 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { BaseService } from './base.service.js';
+import {
+	TypeGetProducto,
+	TypePostProducto,
+} from '../models/Producto.interface.js';
 
-
-const prisma = new PrismaClient()
-
-export const filtroProducto = () => {
-	return prisma
+export class ProductoService extends BaseService<
+	TypeGetProducto,
+	TypePostProducto
+> {
+	constructor() {
+		super('producto');
+	}
 }
