@@ -10,6 +10,7 @@ import { precioRouter } from './routes/precio.route.js';
 import { talleRouter } from './routes/talle.route.js';
 import { usuarioRouter } from './routes/usuario.route.js';
 import { usuarioDireccionRouter } from './routes/usuarioDireccion.route.js';
+import { authRouter } from './routes/auth.route.js';
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/precios', precioRouter);
 app.use('/talles', talleRouter);
 app.use('/usuarios', usuarioRouter);
 app.use('/usuarios-direccion', usuarioDireccionRouter);
+app.use("/auth", authRouter);
 
 app.use(
     (
